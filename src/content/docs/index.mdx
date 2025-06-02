@@ -1,0 +1,28 @@
+---
+title: lotus-simulator.dev
+description: Get started building your scripts for LOTUS-Simulator.
+template: splash
+hero:
+  tagline: Get started building your scripts for LOTUS-Simulator.
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Quickstart
+      link: /rust/quickstart/
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+<CardGrid>
+  <Card title="lotus-script crate docs" icon="open-book">
+    The crate documentation for the lotus-script crate can be found
+    <a href="https://docs.rs/lotus-script/latest/lotus_script/">on docs.rs</a>.
+    If you are on the experimental branch, please refer to
+    <a href="https://script-rs.lotus-simulator.dev/lotus_script/">these docs</a>.
+  </Card>
+  <Card title="lotus-script source code" icon="github">
+    If you are interested how the lotus-script crate is implemented, you can find the source code
+    <a href="https://github.com/Oriolus-Software/LOTUS-Scripting">here</a>.
+  </Card>
+</CardGrid>

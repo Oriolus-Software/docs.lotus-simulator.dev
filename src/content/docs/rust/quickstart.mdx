@@ -1,0 +1,104 @@
+---
+title: Quickstart
+---
+
+## API Documentation
+
+The API documentation for the `lotus-script` crate can be found [here](https://docs.rs/lotus-script/latest/).
+
+## Development environment
+
+We recommend using [Visual Studio Code with rust-analyzer](https://code.visualstudio.com/docs/languages/rust).
+
+## Install Rust and the wasm32 target
+
+To create a new project, you need to have Rust installed. If you don't have it installed, you can install it from [rustup.rs](https://rustup.rs/).
+After installing Rust, you need to install the wasm32 target. You can do this by running the following command:
+
+```bash
+rustup target add wasm32-unknown-unknown
+```
+
+## Install lotus-sc
+
+lotus-sc is a CLI tool that helps you develop scripts for LOTUS. You can install it by running the following command:
+
+```bash
+cargo install lotus-sc
+```
+
+## Create a new project
+
+To create a new project, run the following command and replace `<project-name>` with the name of your project:
+
+```bash
+cargo new --lib <project-name>
+```
+
+You need to add the following to your `Cargo.toml` file:
+
+```toml
+[lib]
+crate-type = ["cdylib"]
+```
+
+To add the lotus-script dependency, you can run the following command:
+
+```bash
+cargo add lotus-script
+```
+
+## Copy the minimal script
+
+You can copy the following minimal script to your `src/lib.rs` file:
+
+```rust
+use lotus_script::prelude::*;
+
+#[derive(Default)]
+pub struct MyScript {}
+
+script!(MyScript);
+
+impl Script for MyScript {
+    fn init(&mut self) {}
+
+    fn tick(&mut self) {}
+}
+```
+
+## Deploy the script
+
+To deploy the script, you first need to create a `script.toml` file next to your `Cargo.toml` file. In this file, you need to add the following:
+
+```toml filename="script.toml"
+[deploy]
+user-id = 1234
+sub-id = 5678
+```
+
+Replace the ids with the corresponding ids for the object the script should be attached to.
+See the [script.toml reference](/reference/scripttoml) for more information.
+
+To deploy the script, you can run the following command:
+
+```bash
+lotus-sc deploy
+```
+
+### Release builds
+
+To create a release build, you can run the following command:
+
+```bash
+lotus-sc build --profile release
+```
+
+## Debugging
+
+To debug your script in LOTUS, press `F4` to open the debug menu. In the debug menu, activate `script-debug`.
+This will open a new window where you can see some information about the script and the script state.
+
+To close this window, deactivate `script-debug` in the debug menu.
+
+Proper WASM debugging is not yet implemented.

@@ -1,0 +1,30 @@
+{
+  "name": "docs.lotus-simulator.dev",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "wrangler deploy",
+    "publish": "bun run build && bun run deploy",
+    "builder": "bun run builder:build && bun run builder:push",
+    "builder:build": "docker build -t harbor.agent0.me/public/bun-playwright -f Dockerfile.builder .",
+    "builder:push": "docker push harbor.agent0.me/public/bun-playwright"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/starlight": "^0.34.3",
+    "astro": "^5.8.1",
+    "rehype-mermaid": "^3.0.0",
+    "sharp": "^0.34.2",
+    "starlight-theme-rapide": "^0.5.1",
+    "tailwindcss": "^4.1.8"
+  },
+  "devDependencies": {
+    "playwright": "^1.52.0",
+    "wrangler": "^4.18.0"
+  }
+}
