@@ -70,6 +70,10 @@ export default defineConfig({
               slug: "rust/input",
             },
             {
+              label: "Async and Shared",
+              slug: "rust/async_shared_d",
+            },
+            {
               label: "Vehicle",
               slug: "rust/vehicle",
             },
