@@ -17,6 +17,7 @@ export default defineConfig({
     starlight({
       plugins: [starlightThemeRapidePlugin()],
       title: "LOTUS Simulator - Dev",
+      favicon: "/favicon.ico",
       social: [
         {
           icon: "github",
