@@ -16,7 +16,7 @@ export default defineConfig({
   integrations: [
     starlight({
       plugins: [starlightThemeRapidePlugin()],
-      title: "LOTUS Simulator - Dev",
+      title: "LOTUS-Simulator NG - Developer Documentation",
       favicon: "/favicon.ico",
       social: [
         {
