@@ -22,7 +22,7 @@ export default defineConfig({
         {
           icon: "github",
           label: "GitHub",
-          href: "https://github.com/Oriolus-Software",
+          href: "https://github.com/Oriolus-Software/docs.lotus-simulator.dev",
         },
       ],
       sidebar: [
