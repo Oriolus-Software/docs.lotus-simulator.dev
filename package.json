@@ -15,9 +15,9 @@
     "builder:push": "docker push harbor.agent0.me/public/bun-playwright"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.0",
-    "@astrojs/starlight": "^0.34.3",
-    "astro": "^5.8.1",
+    "@astrojs/mdx": "4.3.4",
+    "@astrojs/starlight": "0.35.2",
+    "astro": "5.13.4",
     "rehype-mermaid": "^3.0.0",
     "sharp": "^0.34.2",
     "starlight-theme-rapide": "^0.5.1",
