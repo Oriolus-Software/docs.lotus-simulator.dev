@@ -1,22 +1,25 @@
 ---
-title: Async-Konzept und Shared<>
+title: Asynchrones Konzept und Shared<>-Baukasten
 ---
 
 ## Einleitung
 
+Der Hauptteil dieser Dokumentation erklärt den Umgang mit dem RT-Extra-Baukasten. Einen ganz kleinen Einblick in die dahinter liegende Technik gebe ich am Ende dieses Artikels.
+
 ### Übersicht
 
-Abgesehen vom klassischen Script-Konzept, bei dem structs definiert, in der `init()`-Funktion erstellt werden und im jeweiligen `tick()` individuell angelegte Funktionen ausgeführt werden, wird von Lotus auch das radikal andere Async/Await-Konzept unterstützt:
+Abgesehen vom klassischen Script-Konzept, bei dem Structs definiert, in der `init()`-Funktion erstellt werden und im jeweiligen `tick()` individuell angelegte Funktionen ausgeführt werden, gibt es für Lotus-Scripts auch eine Async/Await-Bibliothek. Darauf aufbauend haben
+wir ein asynchrones Baukastenmodell entwickelt:
 
-Hierzu werden in `init()` Anweisungen (in Form von Funktionen) aufgerufen, mit denen die verschiedenen Bausteine erstellt werden und dabei auch gleich definiert, wie sie miteinander verkabelt werden. Jeder Baustein läuft dann von alleine für sich, es muss nichts mehr in die tick()-Funktion eingebaut werden.
+Hierzu werden in `init()` Anweisungen (in Form von Funktionen) aufgerufen, mit denen die verschiedenen Bausteine erstellt werden und dabei auch gleich definiert, wie sie miteinander verkabelt werden. Jeder Baustein läuft dann von alleine für sich, es muss nichts mehr in die `tick()`-Funktion eingebaut werden.
 
 ### Vorteile
 
-- Es werden keinerlei globale Variablen im klassischen Sinne benötigt, welche in der herkömmlichen Programmierung benötigt werden oder alternative komplizierte Ersatzkonstruktionen benötigen, bei denen man häufig mit den strengen Rust-Zugriffsregeln in Konflikt kommt.
+- Durch die Shareds entfällt die Notwendigkeit, Workarounds für gemeinsam genutzte Zustände zu bauen, welche in der herkömmlichen Programmierung benötigt werden (globale Variablen).
 
 - Die einzelnen Elemente werden in einem Schritt bei der Initialisierung erstellt, dabei sofort zusammengestöpselt und fangen an zu arbeiten, man muss sich nicht separat um den Aufbau der Variablen/Struct-Struktur und dann die korrekte Verarbeitung der Tick-Funktionen kümmern, was insbesondere die Wartung vereinfacht.
 
-- Wenn man Builder verwendet (s.u.), dann können in fast allen Fällen ohne Code-Änderungen direkt Updates unserer Async-Bibliothek übernommen werden, auch wenn sich dabei größere Änderungen in den verwendeten Structs ergeben, insbesondere ändern sich keine Tick-Funktionen, weil diese gar nicht von außen aufgerufen werden
+- Wenn man Builder verwendet (s.u.), dann können in fast allen Fällen ohne Code-Änderungen direkt Updates unseres Baukastens übernommen werden, auch wenn sich dabei größere Änderungen in den verwendeten Structs ergeben, insbesondere ändern sich keine Tick-Funktionen, weil diese gar nicht von außen aufgerufen werden
 
 - Verzögerte oder zeitlich in Stufen (mit Pausen) ablaufende Vorgänge lassen sich wesentlich eleganter lösen. Bausteine können einfach einschlafen, ohne dass man komplizierte State-Variablen einführen muss und ohne dass das ganze Script anhält.
 
@@ -28,15 +31,15 @@ Die Kommunikation zwischen den mit Funktionen definierten Bausteinen erfolgt mit
 
 1. Normalerweise bleiben sie die ganze Lebenszeit des Scripts existent
 
-2. Sie halten eine Variable, sie sind dabei generisch, man kann also neben den Standardtypen wie i32, f32 usw. auch jeden beliebigen, ggf. selbst definierten Typ verwenden, solange dieser Default und Clone implementiert.
+2. Sie halten eine Variable, sie sind dabei generisch, man kann also neben den Standardtypen wie `i32`, `f32` usw. auch jeden beliebigen, ggf. selbst definierten Typ verwenden, solange dieser Default und Clone implementiert.
 
-3. Sie können beliebig geklont werden, trotzdem lesen und speichern beide Klone immernoch über denselben Speicherbereich.
+3. Sie können beliebig geklont werden, trotzdem lesen und speichern beide Klone immer noch über denselben Speicherbereich.
 
 4. Es wird verfolgt, wann sie geschrieben werden: Ein Großteil der Funktionen, gerade der einfachen wie `to_float()`, `or` usw., werden daher nur dann aktiv, wenn sich der Input-Shared verändert! Es handelt sich also nicht um Verbindungen, die ständig im Simstep abgearbeitet werden!
 
-5. Shareds werden – obwohl sich deren Wert verändern kann – immutable erstellt, also ohne `mut`, und sind somit sehr freizügig einsetzbar. Auch die Ownership von Rust ist kein Problem, da Shareds beliebig geklont werden können (also `foo.clone()`) und sie trotzdem weiterhin auf dieselbe (!) Variable verweisen.
+5. Shareds können ohne `mut` gebunden werden, weil der innere Zustand intern mutabel verwaltet wird, und sind somit sehr freizügig einsetzbar. Auch die Ownership von Rust ist kein Problem, da Shareds beliebig geklont werden können (also `foo.clone()`) und sie trotzdem weiterhin auf dieselbe (!) Variable verweisen.
 
-Shareds können von Bausteinen sowohl gelesen als auch geschrieben werden – oder beides. Aber auch aus eigenen Funktionen, auch wenn diese aus "tick()" heraus aufgerufen werden, können Shareds jederzeit schreiben oder lesen.
+Shareds können von Bausteinen sowohl gelesen als auch geschrieben werden – oder beides. Aber auch aus eigenen Funktionen, auch wenn diese aus `tick()` heraus aufgerufen werden, können Shareds jederzeit schreiben oder lesen.
 
 ### Unsichtbare Shareds
 
@@ -76,7 +79,7 @@ struct PropertiesABC {
 }
 
 fn init_function(a: PropertiesABC){
-    ...
+    …
 }
 ```
 
@@ -98,7 +101,7 @@ init_function(
 )
 ```
 
-So weit, so kompliziert... ;-)
+So weit, so kompliziert… ;-)
 
 Jetzt wird es aber interessant: Wenn die Felder `param_b` und `param_c` Options sind, dann kann man sie einfach weglassen:
 
@@ -121,9 +124,9 @@ init_function(
 )
 ```
 
-Das ist vor allem interessant, wenn man Structs hat, bei denen es viele optionale Felder gibt.
+Das ist besonders praktisch bei Structs mit vielen optionalen Feldern.
 
-Aber auch ist der Umgang mit Strings und Vektoren cleaner:
+Auch der Umgang mit Strings und Vektoren wird damit eleganter:
 
 ```rust
 #[derive(Builder)]
@@ -144,7 +147,7 @@ init_function(
 )
 ```
 
-Und das Beste: Wenn wir in unsere Bibliothek nachträglich ein viertes, optimales Feld hinzufügen, dann muss Dein Code in keiner Weise angepasst werden:
+Und das Beste: Wenn wir in unsere Bibliothek nachträglich ein viertes Feld hinzufügen, dann muss Dein Code in keiner Weise angepasst werden (sofern das Feld ein Option<> ist oder Default implementiert):
 
 ```rust
 #[derive(Builder)]
@@ -213,17 +216,17 @@ Hier ist nun folgendes passiert:
 
 Der Aufbau der einzelnen Module erfolgt mittels Funktionen, die aus dem `init()` heraus aufgerufen werden.
 
-`std_button()` erstellt einen Button und verwendet dafür die `ButtonProperties`. Hierbei handelt es sich um einen einfachen `struct`, der hier mit einem Builder erstellt wird, man könnte also auch statt dem `builder()...` auch einfach schreiben `ButtonProperties{input_event: ... }`.
+`std_button()` erstellt einen Button und verwendet dafür die `ButtonProperties`. Hierbei handelt es sich um einen einfachen `struct`, der hier mit einem Builder erstellt wird, man könnte also statt dem `builder()…` auch einfach schreiben `ButtonProperties{input_event: … }`.
 zu tun.
 
 Die Rückgabe, also der Typ von `button_lightcheck` ist ein `Shared<bool>`. In der Simulation wird der Button also seinen boolischen Zustand in den Shared `button_lightcheck` schreiben.
 
-In der nächsten Zeile wird an den boolische Shared der Baustein `to_float()' angehängt, so dass im hier
-neu definierten Shared `button_lightcheck_float` nun ein f32 liegt, der entweder 0.0 oder 1.0 ist.
+In der nächsten Zeile wird an den `Shared<bool>` der Baustein `to_float()` angehängt, so dass im hier
+neu definierten Shared `button_lightcheck_float` nun ein`f32` liegt, der entweder 0.0 oder 1.0 ist.
 
 In der dritten Zeile wird mit `var_writer()` der Wert von `button_lightcheck_float` in eine Variable geschrieben.
 
-Man beachte: Dieses Stück Code erstellt zum einen die Shareds, als auch konfiguriert es den technischen Ablauf, mehr wird nicht benötigt.
+Man beachte: Dieses Stück Code erstellt zum einen die Shareds und konfiguriert gleichzeitig den technischen Ablauf, mehr wird nicht benötigt.
 
 ### Vereinfachung`
 
@@ -250,7 +253,7 @@ graph TD
 
 ```
 
-ABER ACHTUNG: Das Verbinden von mehreren Bausteinen ist nur möglich, wenn der dazwischenliegende Wert nicht von anderer Seite erreichbar ist! Möchte man z.B. den Boolean vom Taster noch woanders verwenden, muss man wie oben den Taster erstmal per `let button_lightcheck = std_button(...)` in eine Variable schreiben.
+ABER ACHTUNG: Das Verbinden von mehreren Bausteinen ist nur möglich, wenn der dazwischenliegende Wert nicht von anderer Seite erreichbar ist! Möchte man z.B. den Boolean vom Taster noch woanders verwenden, muss man wie oben den Taster erstmal per `let button_lightcheck = std_button(…)` in eine Variable schreiben.
 
 ## Es wird umfangreicher
 
@@ -294,7 +297,7 @@ graph TD
 
 ```
 
-Hier wird das Signal vom Switch genommen, dann wird die ODER-Operation zusammen mit einem anderen Shared, nämlich dem vom Lichttest, durchgeführt, dann in einen f32 zwischen 0.0 und 1.0 umgewandelt, mit der Spannung multipliziert und schließlich in eine Variable geschrieben.
+Hier wird das Signal vom Switch genommen, dann wird die ODER-Operation zusammen mit einem anderen Shared, nämlich dem vom Lichttest, durchgeführt, dann in einen `f32` zwischen 0.0 und 1.0 umgewandelt, mit der Spannung multipliziert und schließlich in eine Variable geschrieben.
 
 Alternativ könnte man den Ablauf auch wie folgt bauen:
 
@@ -312,7 +315,7 @@ graph TD
 ```
 
 ```rust
-    ...
+    …
 
     let flashlight_switch = switch(
             SwitchProperties::builder()
@@ -348,28 +351,28 @@ Nehmen wir als Beispiel das Cockpit-Modul. Hier verhält es sich so, dass die me
 pub struct Cockpit {
     light: Shared<bool>,
     doors: Shared<bool>,
-    ...
+    …
 }
 ```
 
 Für's Erstellen und Verkabeln der Bausteine verwenden wir einfach die Funktion `default()` der Default-Implementierung, die automatisch
 aufgerufen wird. Für das Erstellen der Bausteine, die nach außen hin les-/schreibbar sein sollen, gibt es dann zwei verschiedene Varianten, die auch gemischt angewendet werden können:
 
-Entweder lässt man das Baustein per `let` einer lokalen Variable zuweisen und überträgt diese dann (siehe im Beispiel `light`), oder man erstellt das Baustein direkt im struct (siehe im Beispiel `doors`). Der Lightcheck-Button wird dagegen nur lokal gespeichert.
+Entweder lässt man den Baustein per `let` einer lokalen Variable zuweisen und überträgt diese dann (siehe im Beispiel `light`), oder man erstellt den Baustein direkt im struct (siehe im Beispiel `doors`). Der Lightcheck-Button wird dagegen nur lokal gespeichert.
 
 ```rust
 impl Default for Cockpit {
     fn default() -> Self {
-        let light_check = std_button(...);
+        let light_check = std_button(…);
 
-        let light = std_button(...);
+        let light = std_button(…);
 
         Self{
             // da der Name der lokalen Variable mit dem des Structs
             // identisch ist, geht auch die vereinfachte Version "light,":
             light: light,
 
-            doors: std_button(...),
+            doors: std_button(…),
         }
     }
 }
@@ -389,7 +392,7 @@ pub struct Systems {
     pub traction: Traction,
     pub brakes: Brakes,
     pub flaps_and_co: FlapsAndCo,
-    ...
+    …
 }
 ```
 
@@ -404,14 +407,14 @@ impl Default for Systems {
             traction: Traction::default(),
             brakes: Brakes::default(),
             flaps_and_co: FlapsAndCo::default(),
-            ...
+            …
         };
 
         interface.general_stuff();
 
         interface.power_stuff();
 
-        ...
+        …
 
         interface
     }
@@ -437,10 +440,10 @@ impl Systems {
     }
 
     fn interface.power_stuff(&self) {
-        ...
+        …
     }
 
-    ...
+    …
 }
 
 ```
@@ -460,7 +463,7 @@ Das Default-Derive sorgt dann automatisch dafür, dass `systems` mit dessen Defa
 
 ### Ähnliche Bausteine
 
-Ein Klassiker hierfür sind Dashboards mit vielen baugleichen Tastern. Da bestimmte Parameter beim Zusammenbau im Falle dieses Dashboards
+Ein klassisches Beispiel sind Dashboards mit vielen baugleichen Tastern. Da bestimmte Parameter beim Zusammenbau im Falle dieses Dashboards
 immer gleich sind, kann man hierfür eine eigene Funktion anlegen, die dann einerseits nur die variierenden Parameter (Animation und Event) benötigt und andererseits selbst ohne Builder aufgerufen werden kann, ohne dass man die Vorteile desselben verliert:
 
 ```rust
@@ -476,10 +479,10 @@ immer gleich sind, kann man hierfür eine eigene Funktion anlegen, die dann eine
         )
     }
 
-    ...
+    …
     light = gt6n_button("Light_Toggle", "switch_light_pos");
     heater = gt6n_button("Heater_OnOff", "switch_heater_pos");
-    ...
+    …
   }
 ```
 
@@ -492,7 +495,7 @@ Selbstverständlich ist es auch möglich, Funktionen zu bauen, die als eigene Ba
 Das ist sicherlich die einfachste Variante, ein individuelles Verhalten zu bauen: Unter Verwendung des Bausteins `process`. Dieses Element ist generisch, das heißt es kann an jeden beliebigen Baustein oder jedes beliebige Shared angehängt werden. Man übergibt ihm dann eine normale Funktion oder eine Closure (eine spezielle Art von Funktion, die direkt "vor Ort" erstellt wird), die dann entsprechend ausgeführt wird, wenn ein neuer Eingangswert kommt:
 
 ```rust
-    let a = std_button(...).process(|f| if f {3} else {5});
+    let a = std_button(…).process(|f| if f {3} else {5});
 ```
 
 In diesem Beispiel wird, sobald der Button gedrückt oder losgelassen wird, die Funktion in der Klammer durchgeführt und der Wert im Shared a gespeichert. Dementsprechend nimmt a den Wert 3 an, wenn die Taste gedrückt wird, und 5, wenn sie losgelassen wird.
@@ -507,7 +510,7 @@ fn neue_funktion(a: Shared<bool>, b: Shared<bool>) -> Shared<float>{
 }
 ```
 
-Sobald sich a oder b verändern, wird a invertiert und mit b ODER-operiert, anschließend in einen f32 umgewandelt.
+Sobald sich a oder b verändern, wird a invertiert und mit b ODER-operiert, anschließend in einen `f32` umgewandelt.
 
 ### Mit on_refresh oder on_actually_change
 
@@ -545,3 +548,43 @@ Hier wird die Closure nur dann aufgerufen, wenn sich der Wert von `a` auch wirkl
 wenn zu erwarten ist dass `a` ständig geschrieben wird (z.B. bei exponentieller Näherung).
 
 ### Mit eigener Loop
+
+Und schließlich gibt es noch die ganz "rohe" Variante – mit einem eigenen Loop. Wie dieser genau arbeitet, hängt dann natürlich
+vom Anwendungsfall ab: Es können Loops sein, die in jedem Berechnungsschritt durchlaufen werden, oder welche, die auf verschiedene
+Dinge warten, sei es das Setzen eines Shareds oder einem Tastendruck – oder einfach dem Ablauf eines Zeitintervalls. Als einfaches Beispiel
+sei hier `exponential_approach` gezeigt:
+
+```rust
+pub fn exponential_approach(&self, exponent: f32) -> Shared<f32> {
+    let state = Shared::<f32>::default();
+
+    {
+        let state = state.clone();
+        let target = self.clone();
+
+        spawn(async move {
+            loop {
+                state.set(exponential_approach(state.get(), exponent, target.get()));
+                wait::next_tick().await;
+            }
+        });
+    }
+
+    state
+}
+```
+
+Zunächst wird ein Output erstellt (`state`) und ein Klon erstellt, da das "Original" am Ende als Rückgabewert übergeben wird. Auch von `self` wird ein Klon erstellt. Die Klone benötigt man, da diese per `move` an die asynchrone Funktion übergeben werden.
+
+Der Aufruf von `spawn` ruft die "innere" Funktion auf (in diesem Fall eine Closure); das Besondere ist aber, dass diese Funktion _asynchron_ zu laufen beginnt, d.h. die äußere Funktion wartet nicht auf die innere Funktion, sondern läuft unmittelbar weiter. Das bedeutet auch, dass die innere Funktion beliebig lange laufen kann, ohne dass das restliche Script oder gar Programm einfriert.
+
+Genau diese Eigenschaft nutzen wir hier aus: Die asynchron gestartete Funktion ist hier nämlich eine Endlosschleife, in der der Wert von `state`genommen wird, durch die mathematische Funktion `exponential_approach` geleitet wird, und schließlich in das `target` geschrieben wird. Anschließend _muss_ irgendein wait:: aufgerufen werden, andernfalls würde die Schleife nämlich dann _doch_ alles aufhalten. In diesem
+Fall wird einfach das nächste Tick abgewartet.
+
+Abschließend sei noch erwähnt, dass asynchron aufgerufene Funktionen natürlich _nicht_ endlos laufen müssen. Wenn man Mikroprozessoren aller Art simulieren möchte, könnte man z.B. eine Einstiegsfunktion asynchron aufrufen, die dann wiederum irgendeinen Bildschirm rendert, dann zwei
+Sekunden wartet (z.B.mit `wait::seconds(1.0).await()`), dann einen anderen Bildschirm zeigt und dann auf eine User-Eingabe wartet. Sobald diese erfolgt, könnten wiederum nach einer Verzögerung verschiedene asynchrone Funktionen aufgerufen werden – je nach Eingabe – und die Funktion enden. Da dies alles asynchron stattfindet, wird zu keinem Zeitpunkt irgendein anderer Simulator-/Script-Ablauf gestört.
+
+## Und was ist mit der Thread-Safety???
+
+Hier braucht man sich keine Sorgen machen: Auch wenn _scheinbar_ mehrere Funktionen gleichzeitig laufen, so kann man sich sicher sein, dass
+innerhalb (!) eines Scripts keine verschiedenen Stücke Code tatsächlich gleichzeitig laufen. Technisch läuft ein bestimmtes Script stets auf einem einzigen Thread, die verschiedenen zueinander asynchronen Funktionen laufen hintereinander ab. In welcher Reihenfolge diese abgearbeitet werden, lässt sich jedoch nicht vorhersagen!
