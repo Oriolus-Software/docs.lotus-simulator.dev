@@ -1,5 +1,5 @@
 ---
-title: Asynchroner Baukasten
+title: Einstieg und Motivation
 ---
 
 ## Einleitung
@@ -145,3 +145,7 @@ Die ersten drei Vorteile zeigen sich schon bei einem ersten Blick:
 - Wesentlich kürzer
 - Vermeidung unnötiger Status-Variablen (hier: feld2 taucht nur lokal auf, feld3 wird gar nicht benötigt, init kann direkt verwendet werden)
 - Viele der sich ständig wiederholende Implementierungen fallen komplett weg - hier bspw. die so oft vorkommende Prüfung auf Variablenveränderung.
+
+## Und nu?
+
+Falls Dein Interesse geweckt ist, dann geht's mit den nächsten Artikeln weiter. Sie bauen in der Reihenfolge im Menü aufeinander auf, was aber natürlich niemanden davon abhalten soll, auch ein bisschen "durcheinander" zu lesen, im Gegenteil. :-)

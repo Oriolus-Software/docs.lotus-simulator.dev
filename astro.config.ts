@@ -70,10 +70,6 @@ export default defineConfig({
               slug: "rust/input",
             },
             {
-              label: "Async and Shared",
-              slug: "rust/async_shared_d",
-            },
-            {
               label: "Vehicle",
               slug: "rust/vehicle",
             },
@@ -92,6 +88,35 @@ export default defineConfig({
             {
               label: "Asset Preloading",
               slug: "rust/asset-preloading",
+            },
+            {
+              label: "Async-Baukasten",
+              items: [
+                {
+                  label: "Einstieg und Motivation",
+                  slug: "rust/async/start_d",
+                },
+                {
+                  label: "Konzept",
+                  slug: "rust/async/concept_d",
+                }, 
+                {
+                  label: "Beispiele",
+                  slug: "rust/async/examples_d",
+                },
+                {
+                  label: "Einbau ins Fahrzeugscript",
+                  slug: "rust/async/using_d",
+                },
+                {
+                  label: "Eigene Bausteine erstellen",
+                  slug: "rust/async/own_modules_d",
+                },
+              ],
+            },
+            {
+              label: "Builder",
+              slug: "rust/builder_d",
             },
             {
               label: "Gizmos",
