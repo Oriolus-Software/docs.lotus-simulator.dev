@@ -2,7 +2,7 @@
 title: Messages
 ---
 
-For general semantics of how messages are send and handled, see the [messages reference](/reference/messages/).
+For general semantics of how messages are send and handled, see the [messages reference](/en/reference/messages/).
 
 ## Define custom message types
 

@@ -8,6 +8,10 @@ import rehypeMermaid, { type RehypeMermaidOptions } from "rehype-mermaid";
 export default defineConfig({
   site: "https://docs.lotus-simulator.dev",
 
+  redirects: {
+    "/": "/en/",
+  },
+
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",
@@ -18,6 +22,17 @@ export default defineConfig({
       plugins: [starlightThemeRapidePlugin()],
       title: "LOTUS-Simulator NG - Developer Documentation",
       favicon: "/favicon.ico",
+      defaultLocale: "en",
+      locales: {
+        en: {
+          label: "English",
+          lang: "en",
+        },
+        de: {
+          label: "Deutsch",
+          lang: "de",
+        },
+      },
       social: [
         {
           icon: "github",

@@ -7,4 +7,4 @@ The code documentation can be found on [docs.rs](https://docs.rs/lotus-script/la
 are on the experimental build, please use [these docs](https://script-rs.lotus-simulator.dev/lotus_script/)
 instead.
 
-To get started, refer to the [quickstart guide](/rust/quickstart/).
+To get started, refer to the [quickstart guide](/en/rust/quickstart/).

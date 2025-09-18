@@ -16,7 +16,7 @@ possible draw commands.
 ## Bitmap fonts
 
 You can load LOTUS bitmap fonts to draw them onto a texture. To draw a bitmap font onto a texture you first
-need to have it loaded. See [asset preloading](/rust/asset-preloading/) if you need more control over the
+need to have it loaded. See [asset preloading](/en/rust/asset-preloading/) if you need more control over the
 load process.
 
 ### Bitmap font metadata
