@@ -21,11 +21,7 @@ rustup target add wasm32-unknown-unknown
 
 ## Install lotus-sc
 
-lotus-sc is a CLI tool that helps you develop scripts for LOTUS. You can install it by running the following command:
-
-```bash
-cargo install lotus-sc
-```
+`lotus-sc` is a CLI tool that helps you develop scripts for LOTUS. You can download the installer from [here](http://nexus.lotus-simulator.dev/assets/lotus-sc-installer/lotus-sc-installer.exe). For more information, please refer to the [lotus-sc documentation](/lotus-sc/overview/).
 
 ## Create a new project
 
@@ -69,16 +65,17 @@ impl Script for MyScript {
 
 ## Deploy the script
 
-To deploy the script, you first need to create a `script.toml` file next to your `Cargo.toml` file. In this file, you need to add the following:
+To deploy the script, you first need to create a `scripts.toml` file next to your `Cargo.toml` file. In this file, you need to add the following:
 
-```toml filename="script.toml"
-[deploy]
+```toml filename="scripts.toml"
+[[script]]
 user-id = 1234
 sub-id = 5678
+toolchain = "cargo"
 ```
 
 Replace the ids with the corresponding ids for the object the script should be attached to.
-See the [script.toml reference](/reference/scripttoml) for more information.
+See the [scripts.toml reference](/lotus-sc/configuration) for more information.
 
 To deploy the script, you can run the following command:
 
@@ -91,7 +88,7 @@ lotus-sc deploy
 To create a release build, you can run the following command:
 
 ```bash
-lotus-sc build --profile release
+lotus-sc deploy --release
 ```
 
 ## Debugging

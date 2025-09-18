@@ -40,6 +40,19 @@ export default defineConfig({
           ],
         },
         {
+          label: "lotus-sc",
+          items: [
+            {
+              label: "Overview",
+              slug: "lotus-sc/overview",
+            },
+            {
+              label: "Configuration",
+              slug: "lotus-sc/configuration",
+            },
+          ],
+        },
+        {
           label: "Rust",
           items: [
             {
