@@ -125,6 +125,39 @@ export default defineConfig({
           ],
         },
         {
+          label: "Plugin API",
+          items: [
+            {
+              label: "Introduction",
+              slug: "plugin-api/introduction",
+            },
+            {
+              label: "GET /release-info",
+              slug: "plugin-api/release-info",
+            },
+            {
+              label: "GET /scripts",
+              slug: "plugin-api/scripts",
+            },
+            {
+              label: "GET /scripts/{id}",
+              slug: "plugin-api/script-details",
+            },
+            {
+              label: "GET /scripts/{id}/textures/{name}",
+              slug: "plugin-api/script-details-textures",
+            },
+            {
+              label: "PUT /scripts/{id}/variables",
+              slug: "plugin-api/script-variables",
+            },
+            {
+              label: "POST /scripts/{id}/messages",
+              slug: "plugin-api/script-messages",
+            },
+          ],
+        },
+        {
           label: "WASM",
           items: [
             {
