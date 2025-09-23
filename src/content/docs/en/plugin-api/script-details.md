@@ -6,53 +6,54 @@ title: GET /scripts/{id}
 
 ```json
 {
+  "content_id": {
+    "sub_id": 31997818,
+    "user_id": 1000,
+    "version": 44646.38152299768
+  },
   "id": 4294967358,
   "logs": [
     {
       "level": "info",
       "message": "init -----------------------------",
-      "timestamp": 1758572290332840
+      "timestamp": 1758653181028272
     },
     {
       "level": "info",
       "message": "is_coupled: false",
-      "timestamp": 1758572290332853
+      "timestamp": 1758653181028286
     },
     {
       "level": "info",
       "message": "is_coupled: false",
-      "timestamp": 1758572290332854
+      "timestamp": 1758653181028287
     },
     {
       "level": "info",
       "message": "cockpit index: None, module_slot_index: None, module_slot_in_class_index: None",
-      "timestamp": 1758572290333968
+      "timestamp": 1758653181029533
     },
     {
       "level": "info",
       "message": "Message: Message { meta: MessageMeta { namespace: \"Std\", identifier: \"Batteryvoltage\", bus: None }, source: MessageSource { coupling: None, module_slot_index: None, module_slot_cockpit_index: None }, value: Object {\"On\": Number(1.0)} }",
-      "timestamp": 1758572290335157
+      "timestamp": 1758653181030909
     },
     {
       "level": "info",
       "message": "Message: Message { meta: MessageMeta { namespace: \"Std\", identifier: \"PowerSignal\", bus: None }, source: MessageSource { coupling: None, module_slot_index: None, module_slot_cockpit_index: None }, value: Object {\"On\": Object {\"cabin_id\": String(\"ACab\"), \"quickstart\": Bool(false)}} }",
-      "timestamp": 1758572290335164
+      "timestamp": 1758653181030915
     }
   ],
   "metrics": {
     "fontsCount": 0,
     "fontsTotalSize": 0,
     "lastMemorySize": 1376256,
-    "lastUpdateTime": 0.000395785,
+    "lastUpdateTime": 0.000470911,
     "scriptTexturesCount": 1,
     "scriptTexturesTotalSize": 262144
   },
-  "name": "Vehicle 0",
-  "textures": [
-    {
-      "name": null
-    }
-  ],
+  "name": "GT6N",
+  "textures": [],
   "variables": {
     "A_CP_FstBelBegleiter": {
       "type": "f64",
