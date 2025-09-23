@@ -136,6 +136,10 @@ export default defineConfig({
               slug: "plugin-api/release-info",
             },
             {
+              label: "POST /input/action",
+              slug: "plugin-api/input-action",
+            },
+            {
               label: "GET /scripts",
               slug: "plugin-api/scripts",
             },
