@@ -25,67 +25,23 @@ rustup target add wasm32-unknown-unknown
 
 ## Create a new project
 
-To create a new project, run the following command and replace `<project-name>` with the name of your project:
-
 ```bash
-cargo new --lib <project-name>
+lotus-sc create -n my-project -l rust
 ```
 
-You need to add the following to your `Cargo.toml` file:
+Follow the instructions in the terminal to complete the project creation.
 
-```toml
-[lib]
-crate-type = ["cdylib"]
-```
-
-To add the lotus-script dependency, you can run the following command:
-
-```bash
-cargo add lotus-script
-```
-
-## Copy the minimal script
-
-You can copy the following minimal script to your `src/lib.rs` file:
-
-```rust
-use lotus_script::prelude::*;
-
-#[derive(Default)]
-pub struct MyScript {}
-
-script!(MyScript);
-
-impl Script for MyScript {
-    fn init(&mut self) {}
-
-    fn tick(&mut self) {}
-}
-```
+Edit the `scripts.toml` file to set the correct user and sub ids for the object the script should be attached to.
 
 ## Deploy the script
-
-To deploy the script, you first need to create a `scripts.toml` file next to your `Cargo.toml` file. In this file, you need to add the following:
-
-```toml filename="scripts.toml"
-[[script]]
-user_id = 1234
-sub_id = 5678
-toolchain = "cargo"
-```
-
-Replace the ids with the corresponding ids for the object the script should be attached to.
-See the [scripts.toml reference](/en/lotus-sc/configuration) for more information.
-
-To deploy the script, you can run the following command:
 
 ```bash
 lotus-sc deploy
 ```
 
-### Release builds
+This will compile the script and put it in the correct directory for LOTUS to pick it up. You need to restart the simulator if it is running while you deploy for an object for the first time. All following deploys will be hot-reloaded.
 
-To create a release build, you can run the following command:
+### Release builds
 
 ```bash
 lotus-sc deploy --release
