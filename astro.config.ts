@@ -109,6 +109,10 @@ export default defineConfig({
                   slug: "rust/async/using_d",
                 },
                 {
+                  label: "Bausteine",
+                  slug: "rust/async/elements_d",
+                },
+                {
                   label: "Eigene Bausteine erstellen",
                   slug: "rust/async/own_modules_d",
                 },

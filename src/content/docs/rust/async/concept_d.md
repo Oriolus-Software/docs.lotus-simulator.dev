@@ -44,13 +44,23 @@ Die Kommunikation zwischen den mit Funktionen definierten Bausteinen erfolgt mit
 
 4. Es wird verfolgt, wann sie geschrieben werden: Ein Großteil der Funktionen, gerade der einfachen wie `to_float()`, `or` usw., werden daher nur dann aktiv, wenn sich der Input-Shared verändert! Es handelt sich also nicht um Verbindungen, die ständig im Simstep abgearbeitet werden!
 
-5. Shareds können ohne `mut` gebunden werden, weil sich der "Behälter" selbst ja nicht ändert, und sind somit sehr freizügig einsetzbar. Deshalb ist die Ownership von Rust auch kein Problem, da Shareds beliebig geklont werden können (also `foo.clone()`) und sie trotzdem weiterhin auf dieselbe (!) Variable verweisen.
-
-Shareds können von Bausteinen sowohl gelesen als auch geschrieben werden – oder beides. Auch klassische Implementierungen, die über `tick()` heraus aufgerufen werden, können Shareds jederzeit schreiben oder lesen.
+5. Shareds können ohne `mut` gebunden werden, weil sich der "Behälter" selbst ja nicht ändert, und sind somit sehr freizügig einsetzbar. Deshalb ist die Ownership von Rust auch kein Problem, da Shareds beliebig geklont werden können (also `my_shared.clone()`) und sie trotzdem weiterhin auf dieselbe (!) Variable verweisen.
 
 ### Unsichtbare Shareds
 
 Tatsächlich können viele Bausteine auch direkt miteinander verbunden werden. Hierzu kann hinter einen Shared-liefernden Baustein (z.B. Button) mit einem `.` getrennt ein Shared-erwartender Baustein (wie ein bool-float-Konverter) geschrieben werden.
+
+### Klassisches Lesen, Schreiben und Reagieren
+
+Wenn zu einem bestimmten Zeitpunkt einem Shared ein expliziter Wert zugewiesen werden soll (z.B. aus `init()` oder einer Closure heraus), dann erfolgt dies mit`my_shared.set(&value)` oder `my_shared.set_only_on_change(&value)`, je nachdem, ob geprüft werden soll, ob sich der Wert geändert hat. Erhalten tut man den aktuellen Wert eines Shareds mit `my_shared.get()`.
+
+Außerdem kann man dafür sorgen, dass Shareds (ganz unabhängig vom Baukasten) eine Funktion oder ein Shared aufrufen:
+
+`my_shared.on_refresh(|t|...);` oder `my_shared.on_refresh(my_function());` ruft die Funktion immer dann auf,wenn dem Shared ein Wert zugewiesen wird.
+
+`my_shared.on_actually_change(|t|...)` oder `my_shared.on_actually_change(my_function());` ruft die Funktion nur dann auf, wenn sich der Wert tatsächlich auch _ändert_.
+
+Wichtig ist, dass die obige Zeile nur einmal aufgerufen wird (beispielsweise in `default()` oder in `init()`). Außerdem darf die Funktion selbst keine Schleifen enthalten, andernfalls hält sie das Script auf.
 
 ## Bausteine
 
