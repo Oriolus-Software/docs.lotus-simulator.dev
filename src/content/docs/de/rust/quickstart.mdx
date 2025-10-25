@@ -1,0 +1,63 @@
+---
+title: Quickstart
+---
+
+## API Dokumentation
+
+Die API Dokumentation für die `lotus-script` crate befindet sich [hier](https://docs.rs/lotus-script/latest/).
+
+## Entwicklungsumgebung
+
+Wir empfehlen die Verwendung von [Visual Studio Code mit rust-analyzer](https://code.visualstudio.com/docs/languages/rust).
+
+## Installation von Rust und dem wasm32 target
+
+Um ein neues Script-Projekt zu erstellen, benötigst du Rust. Das Setup für die Installation kannst Du hier herunter laden: [rustup.rs](https://rustup.rs/)
+Nach der Installation von Rust benötigst du noch das wasm32 target. Dies kannst du durch Ausführen dieses Befehls erreichen:
+
+```bash
+rustup target add wasm32-unknown-unknown
+```
+
+## lotus-sc installieren
+
+`lotus-sc` ist ein CLI Tool, das dir hilft, Scripts für LOTUS zu entwickeln.
+Du kannst den Installer von [hier](http://nexus.lotus-simulator.dev/assets/lotus-sc-installer/lotus-sc-installer.exe) herunterladen.
+Für weitere Informationen, sieh dir bitte die [lotus-sc Dokumentation](/de/lotus-sc/overview/) an.
+
+## Neues Projekt erstellen
+
+```bash
+lotus-sc create -n my-project -l rust
+```
+
+Folge den Anweisungen im Terminal, um das Projekt zu erstellen.
+
+Bearbeite die `scripts.toml` Datei, um die korrekten user- und sub ids für das Objekt zu setzen, das das Script angehängt werden soll.
+
+## Script kompilieren und ins Zielverzeichnis kopieren
+
+```bash
+lotus-sc deploy
+```
+
+Dies wird das Script kompilieren und in das korrekte Verzeichnis für LOTUS kopieren.
+Du musst den Simulator neu starten, wenn er läuft, während du das Script für ein Objekt zum ersten Mal auslieferst.
+Alle folgenden Auslieferungen werden hot-reloaded.
+
+### Release builds
+
+```bash
+lotus-sc deploy --release
+```
+
+## Debugging
+
+Um dein Script in LOTUS zu debuggen, drücke `F4`, um das Debug-Menü zu öffnen. Dort kannst du `script-debug` aktivieren.
+
+Dies wird ein neues Fenster öffnen, wo du Informationen über das Script und den Script-Status sehen kannst,
+insbesondere den Wert der öffentlichen Variablen und das Debug-Log.
+
+Um dieses Fenster zu schließen, deaktiviere `script-debug` im Debug-Menü.
+
+Eine ordnungsgemäße WASM-Debugging ist noch nicht implementiert.
