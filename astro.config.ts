@@ -83,6 +83,10 @@ export default defineConfig({
               slug: "rust/recommendations",
             },
             {
+              label: "Experiments with the GT6N",
+              slug: "rust/experiments_vehicle",
+            },            
+            {
               label: "Logging",
               slug: "rust/logging",
             },
